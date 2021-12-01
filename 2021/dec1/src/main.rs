@@ -69,3 +69,20 @@ fn main() {
         Ok(n) => println!("{:?}", n),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_one() {
+        let cursor = io::Cursor::new(b"1\n2\r\n3\n0\n4");
+        assert_eq!(one(cursor).unwrap(), 3);
+    }
+
+    #[test]
+    fn test_two() {
+        let cursor = io::Cursor::new(b"1\n2\r\n3\n0\n0\n0\n4\n4\n4\n5");
+        assert_eq!(two(cursor).unwrap(), 4);
+    }
+}
