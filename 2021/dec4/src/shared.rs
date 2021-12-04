@@ -29,6 +29,25 @@ pub mod matrix {
         (matrix_index, least_position)
     }
 
+    pub fn most_bingo(draws: &Vec<u8>, matrices: &Vec<Vec<u8>>) -> (usize, usize) {
+        let mut most_position: usize = 0;
+        let mut matrix_index: usize = 0;
+
+        for (index, matrix) in matrices.iter().enumerate() {
+            let original_position = bingo_at(matrix, &draws);
+            let mut transposed = vec![0; 25];
+            transpose::transpose(&matrix, &mut transposed, 5, 5);
+            let transposed_position = bingo_at(&transposed, &draws);
+
+            if original_position > most_position && transposed_position > most_position {
+                matrix_index = index;
+                most_position = original_position.min(transposed_position);
+            }
+        }
+
+        (matrix_index, most_position)
+    }
+
     fn bingo_at(matrix: &Vec<u8>, draws: &Vec<u8>) -> usize {
         let mut current_draws: Vec<&u8> = vec![];
         let mut bingo_position: usize = draws.len();
