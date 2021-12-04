@@ -4,6 +4,7 @@ use std::process;
 
 mod one;
 mod shared;
+mod two;
 
 fn main() {
     let file = match File::open("input.txt") {
@@ -17,14 +18,8 @@ fn main() {
     let reader = BufReader::new(&file);
     let (draws, matrices) = shared::file::read(reader).unwrap();
 
-    println!("{:?}", one::one(draws, matrices));
-    /*
-    (&mut &file).rewind().ok();
-
-    match two(&mut reader) {
-        Err(e) => println!("{:?}", e),
-        Ok(n) => println!("{:?}", n),
-    }*/
+    println!("{:?}", one::one(&draws, &matrices));
+    println!("{:?}", two::two(&draws, &matrices));
 }
 
 #[cfg(test)]
@@ -32,18 +27,20 @@ mod tests {
     use super::*;
     use std::io;
 
+    fn parse_file() -> (Vec<u8>, Vec<Vec<u8>>) {
+        let cursor = io::Cursor::new(include_str!("../tests/data/test_input.txt"));
+        shared::file::read(cursor).unwrap()
+    }
+
     #[test]
     fn test_one() {
-        let cursor = io::Cursor::new(include_str!("../tests/data/test_input.txt"));
-        let (draws, matrices) = shared::file::read(cursor).unwrap();
-        assert_eq!(one::one(draws, matrices), 24 * 188);
+        let (draws, matrices) = parse_file();
+        assert_eq!(one::one(&draws, &matrices), 24 * 188);
     }
-    /*
+
     #[test]
-    fn test_two() -> std::io::Result<()> {
-        let file = File::open("tests/data/test_input.txt")?;
-        let reader = BufReader::new(file);
-        assert_eq!(one(reader).unwrap(), 13 * 148);
-        Ok(())
-    }*/
+    fn test_two() {
+        let (draws, matrices) = parse_file();
+        assert_eq!(two::two(&draws, &matrices), 13 * 148);
+    }
 }
