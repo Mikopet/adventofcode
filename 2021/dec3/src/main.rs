@@ -14,8 +14,12 @@ fn one<R: BufRead>(reader: R) -> io::Result<u32> {
         let len = diagnostic.len();
 
         for bit in 0..len {
-            if counter.len() < bit+1 { counter.push(0); }
-            if diagnostic.chars().nth(bit).unwrap().to_string() == "1" { counter[bit] += 1; }
+            if counter.len() < bit + 1 {
+                counter.push(0);
+            }
+            if diagnostic.chars().nth(bit).unwrap().to_string() == "1" {
+                counter[bit] += 1;
+            }
         }
 
         data_length += 1;
@@ -25,7 +29,11 @@ fn one<R: BufRead>(reader: R) -> io::Result<u32> {
         gamma = gamma << 1;
         epsilon = epsilon << 1;
 
-        if sum*2 > data_length { gamma += 1; } else { epsilon += 1; }
+        if sum * 2 > data_length {
+            gamma += 1;
+        } else {
+            epsilon += 1;
+        }
     }
 
     Ok(gamma * epsilon)
@@ -46,15 +54,25 @@ fn two_iterator(length: usize, mut togo: Vec<String>, direction: &str) -> u32 {
 
         match direction {
             "o2" => {
-                if zeros.len() > ones.len() { togo = zeros.clone(); } else { togo = ones.clone(); }
-            },
-            "co2" => {
-                if ones.len() < zeros.len() { togo = ones.clone(); } else { togo = zeros.clone(); }
+                if zeros.len() > ones.len() {
+                    togo = zeros.clone();
+                } else {
+                    togo = ones.clone();
+                }
             }
-            _ => ()
+            "co2" => {
+                if ones.len() < zeros.len() {
+                    togo = ones.clone();
+                } else {
+                    togo = zeros.clone();
+                }
+            }
+            _ => (),
         }
 
-        if togo.len() == 1 { break; }
+        if togo.len() == 1 {
+            break;
+        }
     }
 
     u32::from_str_radix(&togo[0], 2).unwrap()
@@ -109,13 +127,17 @@ mod tests {
 
     #[test]
     fn test_one() {
-        let cursor = io::Cursor::new(b"00100\n11110\n10110\n10111\n10101\n01111\n00111\n11100\n10000\n11001\n00010\n01010");
-        assert_eq!(one(cursor).unwrap(), 22*9);
+        let cursor = io::Cursor::new(
+            b"00100\n11110\n10110\n10111\n10101\n01111\n00111\n11100\n10000\n11001\n00010\n01010",
+        );
+        assert_eq!(one(cursor).unwrap(), 22 * 9);
     }
 
     #[test]
     fn test_two() {
-        let cursor = io::Cursor::new(b"00100\n11110\n10110\n10111\n10101\n01111\n00111\n11100\n10000\n11001\n00010\n01010");
-        assert_eq!(two(cursor).unwrap(), 23*10);
+        let cursor = io::Cursor::new(
+            b"00100\n11110\n10110\n10111\n10101\n01111\n00111\n11100\n10000\n11001\n00010\n01010",
+        );
+        assert_eq!(two(cursor).unwrap(), 23 * 10);
     }
 }
