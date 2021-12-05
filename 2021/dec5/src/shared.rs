@@ -56,7 +56,29 @@ pub mod vents {
     }
 
     fn break_down_segment_diagonal(segment: &Segment) -> Vec<(u16, u16)> {
-        let points: Vec<(u16, u16)> = vec![];
+        let mut points: Vec<(u16, u16)> = vec![];
+
+        let (from_x, from_y, to_x, to_y) =
+            (segment.from.0, segment.from.1, segment.to.0, segment.to.1);
+
+        let length: u16 =
+            (from_x.max(to_x) - to_x.min(from_x)).max(from_y.max(to_y) - to_y.min(from_y));
+
+        for i in 0..length + 1 {
+            let x = match (from_x, to_x) {
+                (f, t) if f > t => f - i,
+                (f, t) if f < t => f + i,
+                _ => from_x,
+            };
+
+            let y = match (from_y, to_y) {
+                (f, t) if f > t => f - i,
+                (f, t) if f < t => f + i,
+                _ => from_y,
+            };
+
+            points.push((x, y));
+        }
 
         points
     }
