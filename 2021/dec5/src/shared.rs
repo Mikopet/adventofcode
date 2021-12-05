@@ -5,32 +5,59 @@ pub mod vents {
         pub to: (u16, u16),
     }
 
-    pub fn count_intersections(segments: Vec<Segment>) -> u32 {
-        let mut line: Option<Segment> = None;
-        let mut intersection_count: u32 = 0;
+    pub fn count_highs(segments: Vec<Segment>) -> u32 {
+        let mut points: Vec<(u16, u16)> = vec![];
 
         for segment in segments {
-            println!("CURRENT {:?}", segment);
-            if line.is_some() {
-                let intersection: Option<(u16, u16)> = None;
+            let mut segment_points = break_down_segment(segment);
 
-                if intersection.is_some() {
-                    println!("INTERSECT {:?}", intersection);
-                    intersection_count += 1;
-                }
-            }
-
-            line = Some(segment);
+            points.append(&mut segment_points);
         }
 
-        intersection_count
+        count_duplicates(points) as u32
+    }
+
+    fn count_duplicates(points: Vec<(u16, u16)>) -> usize {
+        use std::collections::HashMap;
+        let mut value_counts: HashMap<(u16, u16), u8> = HashMap::new();
+
+        for item in points.iter() {
+            *value_counts.entry(*item).or_insert(0) += 1;
+        }
+
+        value_counts
+            .into_iter()
+            .filter(|(_k, v)| *v > 1)
+            .map(|(k, _v)| k)
+            .count()
+    }
+
+    fn break_down_segment(segment: Segment) -> Vec<(u16, u16)> {
+        let mut points: Vec<(u16, u16)> = vec![];
+
+        let (from_x, from_y, to_x, to_y) =
+            (segment.from.0, segment.from.1, segment.to.0, segment.to.1);
+
+        if from_y == to_y {
+            for i in from_x.min(to_x)..from_x.max(to_x) + 1 {
+                points.push((i, from_y));
+            }
+        }
+
+        if from_x == to_x {
+            for i in from_y.min(to_y)..from_y.max(to_y) + 1 {
+                points.push((from_x, i));
+            }
+        }
+
+        points
     }
 }
 
 pub mod file {
+    use super::vents::Segment;
     use lazy_regex::*;
     use std::io::{self, prelude::*};
-    use super::vents::Segment;
 
     pub static DIGITS_RE: Lazy<Regex> = lazy_regex!(r"\d+");
 

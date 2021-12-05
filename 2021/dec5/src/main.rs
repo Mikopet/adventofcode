@@ -23,8 +23,8 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io;
     use shared::vents::Segment;
+    use std::io;
 
     fn parse_file() -> Vec<Segment> {
         let cursor = io::Cursor::new(include_str!("../tests/data/test_input.txt"));
