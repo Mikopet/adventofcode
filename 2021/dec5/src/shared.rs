@@ -5,13 +5,15 @@ pub mod vents {
         pub to: (u16, u16),
     }
 
-    pub fn count_highs(segments: Vec<Segment>) -> u32 {
+    pub fn count_highs(segments: &Vec<Segment>, diagonal: bool) -> u32 {
         let mut points: Vec<(u16, u16)> = vec![];
 
         for segment in segments {
-            let mut segment_points = break_down_segment(segment);
-
-            points.append(&mut segment_points);
+            if diagonal {
+                points.append(&mut break_down_segment_diagonal(segment))
+            } else {
+                points.append(&mut break_down_segment_linear(segment))
+            }
         }
 
         count_duplicates(points) as u32
@@ -32,7 +34,7 @@ pub mod vents {
             .count()
     }
 
-    fn break_down_segment(segment: Segment) -> Vec<(u16, u16)> {
+    fn break_down_segment_linear(segment: &Segment) -> Vec<(u16, u16)> {
         let mut points: Vec<(u16, u16)> = vec![];
 
         let (from_x, from_y, to_x, to_y) =
@@ -49,6 +51,12 @@ pub mod vents {
                 points.push((from_x, i));
             }
         }
+
+        points
+    }
+
+    fn break_down_segment_diagonal(segment: &Segment) -> Vec<(u16, u16)> {
+        let points: Vec<(u16, u16)> = vec![];
 
         points
     }

@@ -4,6 +4,7 @@ use std::process;
 
 mod one;
 mod shared;
+mod two;
 
 fn main() {
     let file = match File::open("input.txt") {
@@ -17,7 +18,8 @@ fn main() {
     let reader = BufReader::new(&file);
     let segments = shared::file::read(reader).unwrap();
 
-    println!("{:?}", one::one(segments));
+    println!("{:?}", one::one(&segments));
+    println!("{:?}", two::two(&segments));
 }
 
 #[cfg(test)]
@@ -34,6 +36,12 @@ mod tests {
     #[test]
     fn test_one() {
         let segments = parse_file();
-        assert_eq!(one::one(segments), 5);
+        assert_eq!(one::one(&segments), 5);
+    }
+
+    #[test]
+    fn test_two() {
+        let segments = parse_file();
+        assert_eq!(two::two(&segments), 12);
     }
 }
