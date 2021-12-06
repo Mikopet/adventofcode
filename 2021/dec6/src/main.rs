@@ -17,7 +17,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_one() {
+    fn test_task() {
         let pool = Pool::from("3,4,3,1,2".to_string());
         assert_eq!(tasks::task(pool, 80), 5934);
     }

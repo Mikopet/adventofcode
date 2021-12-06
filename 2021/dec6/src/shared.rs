@@ -1,63 +1,35 @@
 pub mod pool {
-    pub struct Fish {
-        timer: u8,
-    }
     pub struct Pool {
-        fishes: Vec<Fish>,
-    }
-
-    impl Fish {
-        pub fn new(timer: u8) -> Self {
-            Fish { timer: timer }
-        }
-
-        pub fn age(&self) -> Vec<Fish> {
-            let mut vec: Vec<Fish> = vec![];
-
-            if self.timer > 0 {
-                vec.push(Fish::new(self.timer - 1))
-            } else {
-                vec.push(Fish::new(6));
-                vec.push(Fish::new(8));
-            }
-
-            vec
-        }
+        fishes: [u128; 9],
     }
 
     impl Pool {
         pub fn from(mut s: String) -> Pool {
-            let mut v: Vec<Fish> = vec![];
+            let mut a: [u128; 9] = [0; 9];
 
             if s.ends_with('\n') {
                 s.pop();
             }
 
             for timer in s.split(",") {
-                v.push(Fish::new(timer.parse::<u8>().unwrap()))
+                a[timer.parse::<usize>().unwrap()] += 1;
             }
 
-            Pool { fishes: v }
+            Pool { fishes: a }
         }
 
+        // unfortunately not my own solution. I was influenced...
         pub fn age(self, times: u16) -> Pool {
-            let mut sea: Vec<Fish> = self.fishes;
+            let mut a: [u128; 9] = self.fishes;
 
-            for i in 0..times {
-                let mut pool: Vec<Fish> = vec![];
-
-                for fish in &sea {
-                    pool.append(&mut fish.age());
-                }
-
-                println!("{:?}: {:?}", i, &pool.len());
-                sea = pool;
+            for _ in 0..times {
+                a = [a[1], a[2], a[3], a[4], a[5], a[6], a[7] + a[0], a[8], a[0]]
             }
 
-            Pool { fishes: sea }
+            Pool { fishes: a }
         }
 
-        pub fn get(self) -> Vec<Fish> {
+        pub fn get(self) -> [u128; 9] {
             self.fishes
         }
     }
