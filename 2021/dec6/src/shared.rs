@@ -43,14 +43,14 @@ pub mod pool {
         pub fn age(self, times: u16) -> Pool {
             let mut sea: Vec<Fish> = self.fishes;
 
-            for _ in 0..times {
+            for i in 0..times {
                 let mut pool: Vec<Fish> = vec![];
 
                 for fish in &sea {
-                    let mut new_fishes = fish.age();
-                    pool.append(&mut new_fishes);
+                    pool.append(&mut fish.age());
                 }
 
+                println!("{:?}: {:?}", i, &pool.len());
                 sea = pool;
             }
 
