@@ -13,7 +13,6 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io;
 
     #[test]
     fn test_one() {
