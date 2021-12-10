@@ -37,7 +37,28 @@ fn task_one(v: &Vec<Vec<String>>) -> usize {
 }
 
 fn task_two(v: &Vec<Vec<String>>) -> usize {
-    61229
+    let mut outputs: Vec<usize> = vec![];
+
+    for i in v.into_iter() {
+        let mut digits: Vec<String> = i[..10].to_vec();
+        let output = &i[10..];
+
+        digits.sort_by(|a, b| a.len().cmp(&b.len()));
+
+        let digit_map: HashMap<String, char> = task_two_map_digits(&digits);
+
+        let output: usize = output
+            .iter()
+            .map(|d| digit_map.get(&d.to_string()).unwrap())
+            .cloned()
+            .collect::<String>()
+            .parse()
+            .unwrap();
+
+        outputs.push(output);
+    }
+
+    outputs.iter().sum()
 }
 
 fn task_two_map_digits(digits: &Vec<String>) -> HashMap<String, char> {
