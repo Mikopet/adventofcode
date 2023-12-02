@@ -65,6 +65,29 @@ fn one<R: BufRead>(reader: R) -> io::Result<usize> {
     Ok(possible_games.iter().sum())
 }
 
+fn two<R: BufRead>(reader: R) -> io::Result<usize> {
+    let mut power_of_games: Vec<usize> = vec![];
+    let re = Regex::new(r"(\d+ \w+)").unwrap();
+
+    for line in reader.lines() {
+        let row = line?.clone();
+        let mut max: (u8, u8, u8) = (0, 0, 0);
+
+        for caps in re.captures_iter(&row) {
+            match Cube::from(caps.at(1).unwrap()) {
+                Cube::Red(i) if i > max.0 => { max.0 = i }
+                Cube::Green(i) if i > max.1 => { max.1 = i }
+                Cube::Blue(i) if i > max.2 => { max.2 = i }
+                _ => {}
+            }
+        }
+
+        power_of_games.push(max.0 as usize * max.1 as usize * max.2 as usize);
+    }
+
+    Ok(power_of_games.iter().sum())
+}
+
 fn main() {
     let file;
 
@@ -82,6 +105,13 @@ fn main() {
         Err(e) => println!("{:?}", e),
         Ok(n) => println!("{:?}", n),
     }
+
+    (&mut &file).rewind().ok();
+
+    match two(&mut reader) {
+        Err(e) => println!("{:?}", e),
+        Ok(n) => println!("{:?}", n),
+    }
 }
 
 #[cfg(test)]
@@ -96,5 +126,15 @@ mod tests {
             Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red\n
             Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green");
         assert_eq!(one(cursor).unwrap(), 8);
+    }
+
+    #[test]
+    fn test_two() {
+        let cursor = io::Cursor::new(b"Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green\n
+            Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue\n
+            Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red\n
+            Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red\n
+            Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green");
+        assert_eq!(two(cursor).unwrap(), 2286);
     }
 }
